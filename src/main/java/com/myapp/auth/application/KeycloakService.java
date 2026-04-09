@@ -36,14 +36,11 @@ public class KeycloakService {
     @ConfigProperty(name = "keycloak.client-secret")
     String CLIENT_SECRET;
 
-    @ConfigProperty(name = "keycloak.admin.username")
-    String ADMIN_USERNAME;
+    @ConfigProperty(name = "keycloak.admin.client-id")
+    String ADMIN_CLIENT_ID;
 
-    @ConfigProperty(name = "keycloak.admin.password")
-    String ADMIN_PASSWORD;
-
-
-
+    @ConfigProperty(name = "keycloak.admin.client-secret")
+    String ADMIN_CLIENT_SECRET;
 
     @Inject
     WebClient webClient;
@@ -259,15 +256,12 @@ public class KeycloakService {
     }
 
 
-
-
     public Future<String> getAdminAccessToken() {
         String url = KEYCLOAK_URL + "/realms/" + REALM + "/protocol/openid-connect/token";
-        String formData = "client_id=" + CLIENT_ID +
-                "&client_secret=" + CLIENT_SECRET +
-                "&username=" + ADMIN_USERNAME +
-                "&password=" + ADMIN_PASSWORD +
-                "&grant_type=password";
+
+        String formData = "client_id=" + ADMIN_CLIENT_ID +
+                "&client_secret=" + ADMIN_CLIENT_SECRET +
+                "&grant_type=client_credentials";
 
         Promise<String> promise = Promise.promise();
 
@@ -297,6 +291,7 @@ public class KeycloakService {
 
         return promise.future();
     }
+
 
     // Add to KeycloakService class
     public Future<JsonObject> refreshToken(String refreshToken) {
